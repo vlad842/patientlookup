@@ -1,14 +1,15 @@
-# Use official OpenJDK 17 image as the base
-FROM eclipse-temurin:17-jdk-alpine
-
-# Set working directory in container
+# Build stage
+FROM maven:3.9.6-eclipse-temurin-17 AS build
 WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests
 
-# Copy build artifact into container
-COPY target/*.jar app.jar
+# Run stage
+FROM openjdk:17-jdk-slim
+WORKDIR /app
+COPY --from=build /app/target/patientlookup-0.0.1-SNAPSHOT.jar ./app.jar
+COPY src/main/resources/application-prod.properties ./application-prod.properties
 
-# Expose port 8080 (Spring Boot default)
 EXPOSE 8080
-
-# Run the application
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar", "--spring.config.location=classpath:/application.properties,file:./application-prod.properties"]
