@@ -33,7 +33,7 @@ jobs:
   
       - name: Backup Database
         run: |
-          ssh -i ~/.ssh/id_rsa ${{ env.EC2_HOST }} "docker exec -t db pg_dump -U patientuser patientdb > /home/ubuntu/backup.sql"
+          ssh -i ~/.ssh/id_rsa ${{ env.EC2_HOST }} "docker exec -t app_db_1 pg_dump -U patientuser patientdb > /home/ubuntu/backup.sql"
 
 
       - name: Deploy to EC2
@@ -63,4 +63,4 @@ jobs:
       
       - name: Restore Database
         run: |
-          ssh -i ~/.ssh/id_rsa ${{ env.EC2_HOST }} "docker exec -i db psql -U patientuser -d patientdb < /home/ubuntu/backup.sql"
+          ssh -i ~/.ssh/id_rsa ${{ env.EC2_HOST }} "docker exec -i app_db_1 psql -U patientuser -d patientdb < /home/ubuntu/backup.sql"
