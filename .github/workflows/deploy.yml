@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 env:
-  EC2_HOST: ${{ env.EC2_HOST }}
+  EC2_HOST: ubuntu@3.83.176.123
   EC2_APP_DIR: /home/ubuntu/app
 
 jobs:
@@ -53,4 +53,4 @@ jobs:
           scp -i ~/.ssh/id_rsa -r src/* ${{ env.EC2_HOST }}:${{ env.EC2_APP_DIR }}/src/
           
           # Start/restart containers
-          ssh -i ~/.ssh/id_rsa ${{ env.EC2_HOST }} "cd ${{ env.EC2_APP_DIR }} && docker-compose down && docker-compose up -d" 
+          ssh -i ~/.ssh/id_rsa ${{ env.EC2_HOST }} "cd ${{ env.EC2_APP_DIR }} && docker-compose down && docker-compose up -d"
