@@ -30,6 +30,12 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           known_hosts: ${{ secrets.KNOWN_HOSTS }}
 
+  
+      - name: Backup Database
+        run: |
+          ssh -i ~/.ssh/id_rsa ${{ env.EC2_HOST }} "docker exec -t db pg_dump -U patientuser patientdb > /home/ubuntu/backup.sql"
+
+
       - name: Deploy to EC2
         run: |
           # Install required packages
@@ -54,3 +60,7 @@ jobs:
           
           # Start/restart containers
           ssh -i ~/.ssh/id_rsa ${{ env.EC2_HOST }} "cd ${{ env.EC2_APP_DIR }} && docker-compose down && docker-compose up -d"
+      
+      - name: Restore Database
+        run: |
+          ssh -i ~/.ssh/id_rsa ${{ env.EC2_HOST }} "docker exec -i db psql -U patientuser -d patientdb < /home/ubuntu/backup.sql"
