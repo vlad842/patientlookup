@@ -7,4 +7,4 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class PatientCreateDto extends PatientBaseDto {
     // Additional validation specific to creation if needed
-} 
+}

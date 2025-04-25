@@ -1,4 +1,5 @@
 package com.example.patientlookup.model;
+
 import lombok.Data;
 
 import java.time.LocalDate;

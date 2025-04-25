@@ -10,7 +10,7 @@ public class PatientMapper {
         if (patient == null) {
             return null;
         }
-        
+
         PatientResponseDto dto = new PatientResponseDto();
         dto.setId(patient.getId());
         dto.setName(patient.getName());
@@ -19,4 +19,4 @@ public class PatientMapper {
         dto.setAge(patient.getAge());
         return dto;
     }
-} 
+}

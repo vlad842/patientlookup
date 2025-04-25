@@ -14,4 +14,4 @@ public class PaginatedResponse<T> {
         this.count = count;
         this.page = page;
     }
-} 
+}

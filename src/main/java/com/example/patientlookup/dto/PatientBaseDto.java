@@ -18,4 +18,4 @@ public class PatientBaseDto {
 
     @Email(message = "Invalid email address")
     private String email;
-} 
+}
