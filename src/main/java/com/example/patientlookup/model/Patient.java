@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.UUID;
 
+import com.example.patientlookup.dto.PatientCreateDto;
+import com.example.patientlookup.dto.PatientUpdateDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Column;
@@ -26,6 +28,14 @@ import jakarta.validation.constraints.Past;
 @Data
 @Table(name = "patient")
 public class Patient {
+    public Patient(PatientCreateDto patientDto) {
+        this.name = patientDto.getName();
+        this.dateOfBirth = patientDto.getDateOfBirth();
+        this.email = patientDto.getEmail();
+    }
+
+    public Patient() {}
+    
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -36,7 +46,8 @@ public class Patient {
     @NotNull(message = "Date of birth is required")
     @Past(message = "Date of birth must be in the past")
     @Column(name = "date_of_birth")
-    private LocalDate dob;
+    @JsonProperty("dateOfBirth")
+    private LocalDate dateOfBirth;
 
     @Email(message = "Invalid email address")
     private String email;
@@ -60,6 +71,18 @@ public class Patient {
     }
 
     public int getAge() {
-        return Period.between(dob, LocalDate.now()).getYears();
+        return Period.between(dateOfBirth, LocalDate.now()).getYears();
+    }
+
+    public void updateFromDto(PatientUpdateDto patientDto) {
+        if (patientDto.getName() != null) {
+            this.name = patientDto.getName();
+        }
+        if (patientDto.getDateOfBirth() != null) {
+            this.dateOfBirth = patientDto.getDateOfBirth();
+        }
+        if (patientDto.getEmail() != null) {
+            this.email = patientDto.getEmail();
+        }
     }
 }

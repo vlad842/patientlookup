@@ -3,7 +3,9 @@ package com.example.patientlookup.service;
 import com.example.patientlookup.model.Patient;
 import com.example.patientlookup.repository.PatientRepository;
 import com.example.patientlookup.dto.PatientResponseDto;
+import com.example.patientlookup.dto.PatientUpdateDto;
 import com.example.patientlookup.dto.PaginatedResponse;
+import com.example.patientlookup.dto.PatientCreateDto;
 import com.example.patientlookup.mapper.PatientMapper;
 
 import java.util.List;
@@ -31,14 +33,15 @@ public class PatientService {
         return patientRepository.findAll();
     }
 
-    public Patient createPatient(Patient patient) {
-       return patientRepository.save(patient);
+    public Patient createPatient(PatientCreateDto patientDto) {
+        Patient patient = new Patient(patientDto);
+        return patientRepository.save(patient);
     }
 
     public Optional<Patient> getPatientById(UUID id) {
         return patientRepository.findById(id);
     }
-   
+
     public PaginatedResponse<PatientResponseDto> getPatients(String name, Pageable pageable) {
         Page<Patient> page;
         if (name != null && !name.isBlank()) {
@@ -48,23 +51,25 @@ public class PatientService {
         }
 
         List<PatientResponseDto> content = page.getContent().stream()
-            .map(patientMapper::toResponseDto)
-            .collect(Collectors.toList());
+                .map(patientMapper::toResponseDto)
+                .collect(Collectors.toList());
 
         return new PaginatedResponse<>(
-            content,
-            page.getTotalElements(),
-            page.getNumber()
-        );
+                content,
+                page.getTotalElements(),
+                page.getNumber());
     }
-   
-    public Optional<Patient> updatePatient(UUID id, Patient updatedPatient) {
-        return getPatientById(id).map(existingPatient -> {
-            existingPatient.setName(updatedPatient.getName());
-            existingPatient.setDob(updatedPatient.getDob());
-            existingPatient.setEmail(updatedPatient.getEmail());
-            return patientRepository.save(existingPatient);
-        });
+
+    public Optional<Patient> updatePatient(UUID id, PatientUpdateDto patientDto) {
+        Optional<Patient> existingPatient = patientRepository.findById(id);
+
+        if (existingPatient.isPresent()) {
+            Patient patient = existingPatient.get();
+            patient.updateFromDto(patientDto);
+            return Optional.of(patientRepository.save(patient));
+        }
+
+        return Optional.empty(); // Return an empty optional if patient is not found
     }
 
     public boolean deletePatient(UUID id) {
@@ -80,7 +85,7 @@ public class PatientService {
             updates.forEach((key, value) -> {
                 switch (key) {
                     case "name" -> patient.setName((String) value);
-                    case "dob" -> patient.setDob((LocalDate) value);
+                    case "dateOfBirth" -> patient.setDateOfBirth((LocalDate) value);
                     case "email" -> patient.setEmail((String) value);
                 }
             });

@@ -14,7 +14,7 @@ public class PatientBaseDto {
 
     @NotNull(message = "Date of birth is required")
     @Past(message = "Date of birth must be in the past")
-    private LocalDate dob;
+    private LocalDate dateOfBirth;
 
     @Email(message = "Invalid email address")
     private String email;

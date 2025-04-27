@@ -14,9 +14,11 @@ public class PatientMapper {
         PatientResponseDto dto = new PatientResponseDto();
         dto.setId(patient.getId());
         dto.setName(patient.getName());
-        dto.setDob(patient.getDob());
+        dto.setDateOfBirth(patient.getDateOfBirth());
         dto.setEmail(patient.getEmail());
         dto.setAge(patient.getAge());
+        dto.setCreatedAt(patient.getCreatedAt());
+        dto.setUpdatedAt(patient.getUpdatedAt());
         return dto;
     }
 }

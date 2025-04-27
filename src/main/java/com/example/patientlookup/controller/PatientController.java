@@ -42,11 +42,8 @@ public class PatientController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public PatientResponseDto createPatient(@Valid @RequestBody PatientCreateDto patientDto) {
-        Patient patient = new Patient();
-        patient.setName(patientDto.getName());
-        patient.setDob(patientDto.getDob());
-        patient.setEmail(patientDto.getEmail());
-        return patientMapper.toResponseDto(patientService.createPatient(patient));
+        Patient patient = patientService.createPatient(patientDto);
+        return patientMapper.toResponseDto(patient);
     }
 
     @GetMapping("/{id}")
@@ -58,11 +55,7 @@ public class PatientController {
 
     @PutMapping("/{id}")
     public PatientResponseDto updatePatient(@PathVariable UUID id, @Valid @RequestBody PatientUpdateDto patientDto) {
-        Patient patient = new Patient();
-        patient.setName(patientDto.getName());
-        patient.setDob(patientDto.getDob());
-        patient.setEmail(patientDto.getEmail());
-        return patientService.updatePatient(id, patient)
+        return patientService.updatePatient(id, patientDto)
                 .map(patientMapper::toResponseDto)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Patient not found"));
     }
